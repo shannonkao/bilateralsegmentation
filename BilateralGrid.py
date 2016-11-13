@@ -1,6 +1,8 @@
 MAX_VAL = 255.0
 from scipy.sparse import csr_matrix
 
+import util
+
 def get_valid_idx(valid, candidates):
     """Find which values are present in a list and where they are located"""
     locs = np.searchsorted(valid, candidates)
