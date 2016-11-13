@@ -1,4 +1,4 @@
-MAX_VAL = 255.0
+MAX_VAL = 25.0
 from scipy.sparse import csr_matrix
 
 def get_valid_idx(valid, candidates):
