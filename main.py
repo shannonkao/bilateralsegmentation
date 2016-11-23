@@ -33,6 +33,8 @@ subplot(313)
 imshow(target)
 title('target')
 
+
+# Set parameters
 grid_params = {
     'sigma_luma' : 4, # Brightness bandwidth
     'sigma_chroma': 4, # Color bandwidth
@@ -46,16 +48,20 @@ bs_params = {
     'cg_maxiter': 25 # The number of PCG iterations
 }
 
+# Construct hard bilateral grid
 grid = BilateralGrid(reference, **grid_params)
 
+# Apply bilateral filter
 t = target.reshape(-1, 1).astype(np.double) / (pow(2,16)-1)
 c = confidence.reshape(-1, 1).astype(np.double) / (pow(2,16)-1)
 tc_filt = grid.filter(t * c)
 c_filt = grid.filter(c)
 output_filter = (tc_filt / c_filt).reshape(im_shape)
 
+# Apply bilateral solver
 output_solver = BilateralSolver(grid, bs_params).solve(t, c).reshape(im_shape)
 
+# Visualize the output
 imargs = dict(vmin=0, vmax=1)
 figure(figsize=(14, 24))
 subplot(311)
