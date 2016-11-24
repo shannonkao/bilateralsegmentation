@@ -1,11 +1,14 @@
-from skimage.io import imread
+from scipy.misc import imread, imsave
+from matplotlib import *
+import numpy as np
 import os
 
-import util
-import BilateralGrid
-import BilateralSolver
+from util import rgb2yuv, yuv2rgb
+from BilateralGrid import BilateralGrid
+from BilateralSolver import BilateralSolver
 
-data_folder = os.path.abspath(os.path.join(os.path.curdir, '..', 'data', 'depth_superres'))
+data_folder = os.path.abspath(os.path.join(os.path.curdir, 'data', 'depth_superres'))
+output_folder = os.path.abspath(os.path.join(os.path.curdir, 'output'))
 
 # The RGB image that whose edges we will respect
 reference = imread(os.path.join(data_folder, 'reference.png'))
@@ -22,16 +25,16 @@ assert(im_shape[1] == target.shape[1])
 assert(im_shape[0] == confidence.shape[0])
 assert(im_shape[1] == confidence.shape[1])
 
-figure(figsize=(14, 20))
-subplot(311)
-imshow(reference)
-title('reference')
-subplot(312)
-imshow(confidence)
-title('confidence')
-subplot(313)
-imshow(target)
-title('target')
+# figure(figsize=(14, 20))
+# subplot(311)
+# imshow(reference)
+# title('reference')
+# subplot(312)
+# imshow(confidence)
+# title('confidence')
+# subplot(313)
+# imshow(target)
+# title('target')
 
 grid_params = {
     'sigma_luma' : 4, # Brightness bandwidth
@@ -57,13 +60,15 @@ output_filter = (tc_filt / c_filt).reshape(im_shape)
 output_solver = BilateralSolver(grid, bs_params).solve(t, c).reshape(im_shape)
 
 imargs = dict(vmin=0, vmax=1)
-figure(figsize=(14, 24))
-subplot(311)
-imshow(t.reshape(im_shape), **imargs)
-title('input')
-subplot(312)
-imshow(output_filter, **imargs)
-title('bilateral filter')
-subplot(313)
-imshow(output_solver, **imargs)
-title('bilateral solver')
+# figure(figsize=(14, 24))
+# subplot(311)
+# imshow(t.reshape(im_shape), **imargs)
+# title('input')
+# subplot(312)
+# imshow(output_filter, **imargs)
+# title('bilateral filter')
+# subplot(313)
+# imshow(output_solver, **imargs)
+# title('bilateral solver')
+
+imsave(os.path.join(output_folder, 'output.png'), output_solver)

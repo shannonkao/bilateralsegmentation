@@ -1,7 +1,8 @@
 MAX_VAL = 255.0
 from scipy.sparse import csr_matrix
+import numpy as np
 
-import util
+from util import rgb2yuv, yuv2rgb
 
 def get_valid_idx(valid, candidates):
     """Find which values are present in a list and where they are located"""
@@ -44,7 +45,7 @@ class BilateralGrid(object):
         # Construct sparse blur matrices.
         # Note that these represent [1 0 1] blurs, excluding the central element
         self.blurs = []
-        for d in xrange(self.dim):
+        for d in range(self.dim):
             blur = 0.0
             for offset in (-1, 1):
                 offset_vec = np.zeros((1, self.dim))

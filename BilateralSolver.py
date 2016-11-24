@@ -1,13 +1,14 @@
 from scipy.sparse import diags
 from scipy.sparse.linalg import cg
+import numpy as np
 
-import util
+from util import rgb2yuv, yuv2rgb
 
 def bistochastize(grid, maxiter=10):
     """Compute diagonal matrices to bistochastize a bilateral grid"""
     m = grid.splat(np.ones(grid.npixels))
     n = np.ones(grid.nvertices)
-    for i in xrange(maxiter):
+    for i in range(maxiter):
         n = np.sqrt(n * m / grid.blur(n))
     # Correct m to satisfy the assumption of bistochastization regardless
     # of how many iterations have been run.
@@ -40,7 +41,7 @@ class BilateralSolver(object):
         # Flat initialization
         y0 = self.grid.splat(xw) / w_splat
         yhat = np.empty_like(y0)
-        for d in xrange(x.shape[-1]):
+        for d in range(x.shape[-1]):
             yhat[..., d], info = cg(A, b[..., d], x0=y0[..., d], M=M, maxiter=self.params["cg_maxiter"], tol=self.params["cg_tol"])
         xhat = self.grid.slice(yhat)
         return xhat
